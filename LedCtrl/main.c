@@ -113,8 +113,9 @@ void main(void)
     /* DEBUGGING */
     
     CommandRed = 255;
-    CommandGreen = 255;
-    CommandBlue = 255;
+    CommandGreen = 0;
+    CommandBlue = 0;
+    CommandState = STATE_HIGH;
     
     /* END DEBUG */
     
@@ -230,7 +231,8 @@ void Initialize(void)
 	BRGH = 1;		// High Speed
 	BRG16 = 0;
 	//SPBRG = 51	// Baud == 9600
-	SPBRG = 25;		// Baud == 50000
+    //SPBRG = 47    // Baud == 10417
+	SPBRG = 25;		// Baud == 19200
 	SYNC = 0;		// Asynch
 	SPEN = 1;
 	TXEN = 1;		// TX Enabled
@@ -251,6 +253,17 @@ void Initialize(void)
     // Init odd even cycles
     OddEven = 0;
     LastOddEven = 0;
+
+    // Turn everything off
+    LED_1 = 0;
+    LED_2 = 0;
+    LED_3 = 0;
+    LED_4 = 0;
+    LED_5 = 0;
+    LED_6 = 0;
+    LED_7 = 0;
+    LED_8 = 0;
+    LED_9 = 0;
 
 	GIE = 1;		// Enable interrupts and GO
 }
@@ -282,9 +295,6 @@ void ProcessMessage(void)
     // Reset state for next message
     RecvState = 0;
     
-    // Flip cycle
-    OddEven ^= 1;
-    
     // Calculate and verify the checksum
     unsigned char calcChecksum;
     calcChecksum = (unsigned char)(RecvData[0] + RecvData[1] + RecvData[2] + RecvData[3]);
@@ -295,7 +305,6 @@ void ProcessMessage(void)
     unsigned char command = (unsigned char)(RecvData[COMMAND] & 0b11110000);     // Mask command data 
     unsigned char cmdID;
     unsigned int cmdState;
-    int i;
     switch(command)
     {
         case COMMAND_STATE:            
@@ -308,19 +317,18 @@ void ProcessMessage(void)
             else if (ID == 2)
             {
                 cmdState = (unsigned char)(RecvData[PAYLOAD_1] & 0b00110000);
-                cmdState = cmdState >> 6;
+                cmdState = cmdState >> 4;
                 CommandState = cmdState;
             }
             else if (ID == 3)
             {
                 cmdState = (unsigned char)(RecvData[PAYLOAD_1] & 0b00001100);
-                cmdState = cmdState >> 6;
+                cmdState = cmdState >> 2;
                 CommandState = cmdState;
             }
             else if (ID == 4)
             {
                 cmdState = (unsigned char)(RecvData[PAYLOAD_1] & 0b00000011);
-                cmdState = cmdState >> 6;
                 CommandState = cmdState;
             }
             
@@ -376,6 +384,9 @@ void interrupt timer()
 	// Increment comms time to live
 	if ( RecvState > 0 )
 		ttl++;
+    
+    // Flip cycle
+    OddEven ^= 1;
 
 	// If CLK = 0, end of period
 		// Turn ON all channels > 0
