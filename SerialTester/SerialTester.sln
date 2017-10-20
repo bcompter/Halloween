@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialTester", "SerialTester\SerialTester.csproj", "{F24D44A8-FD32-4041-953F-8F6A28208E36}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F24D44A8-FD32-4041-953F-8F6A28208E36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F24D44A8-FD32-4041-953F-8F6A28208E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F24D44A8-FD32-4041-953F-8F6A28208E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F24D44A8-FD32-4041-953F-8F6A28208E36}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
