@@ -6,6 +6,16 @@
  * 
  */
 
+#pragma config FOSC = INTRCIO   // Oscillator Selection bits (INTOSCIO oscillator: I/O function on RA4/OSC2/CLKOUT pin, I/O function on RA5/OSC1/CLKIN)
+#pragma config WDTE = OFF       // Watchdog Timer Enable bit (WDT disabled and can be enabled by SWDTEN bit of the WDTCON register)
+#pragma config PWRTE = OFF      // Power-up Timer Enable bit (PWRT disabled)
+#pragma config MCLRE = ON       // MCLR Pin Function Select bit (MCLR pin function is MCLR)
+#pragma config CP = OFF         // Code Protection bit (Program memory code protection is disabled)
+#pragma config CPD = OFF        // Data Code Protection bit (Data memory code protection is disabled)
+#pragma config BOREN = ON       // Brown-out Reset Selection bits (BOR enabled)
+#pragma config IESO = OFF       // Internal External Switchover bit (Internal External Switchover mode is disabled)
+#pragma config FCMEN = OFF      // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is disabled)
+
 #include <xc.h>
 
 /**
@@ -14,17 +24,17 @@
 #define LED_1 RC7
 #define LED_2 RC6
 #define LED_3 RC3
-#define LED_4 RC4
-#define LED_5 RC5
-#define LED_6 RA0
-#define LED_7 RC0
-#define LED_8 RC1
+#define LED_4 RC1
+#define LED_5 RC0
+#define LED_6 RA2
+#define LED_7 RB6
+#define LED_8 RB4
 #define LED_9 RC2
 
 /**
  * Timer reset value
  */
-#define TMR_RESET 65380
+#define TMR_RESET 65385     // 65380
 
 /**
  * True
@@ -112,10 +122,10 @@ void main(void)
     
     /* DEBUGGING */
     
-    CommandRed = 255;
+    CommandRed = 0;
     CommandGreen = 0;
-    CommandBlue = 0;
-    CommandState = STATE_HIGH;
+    CommandBlue = 255;
+    CommandState = STATE_LOW;
     
     /* END DEBUG */
     
@@ -400,15 +410,15 @@ void interrupt timer()
         }
 		if ( Pwm_G > 0 )
         {
-			LED_2 = 1;
-            LED_5 = 1;
-            LED_8 = 1;
+            LED_3 = 1;
+            LED_6 = 1;
+            LED_9 = 1;
         }
 		if ( Pwm_B > 0 )
         {
-			LED_3 = 1;
-            LED_6 = 1;
-            LED_9 = 1;
+			LED_2 = 1;
+            LED_5 = 1;
+            LED_8 = 1;
         }
 	}
 
@@ -421,15 +431,14 @@ void interrupt timer()
     }
 	if ( Pwm_clk > Pwm_G )
     {
-		LED_2 = 0;
-        LED_5 = 0;
-        LED_8 = 0;
-    }
-	if ( Pwm_clk > Pwm_B )
-    {
         LED_3 = 0;
         LED_6 = 0;
         LED_9 = 0;
     }
-	
+	if ( Pwm_clk > Pwm_B )
+    {
+        LED_2 = 0;
+        LED_5 = 0;
+        LED_8 = 0;
+    }
 }
