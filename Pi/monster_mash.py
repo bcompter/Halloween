@@ -25,8 +25,8 @@ serialPort = serial.Serial("/dev/ttyAMA0", 19200)
 msg = bytearray(5)
 
 # Open script for reading
-#fo = open("commands.csv", "r")
-fo = open("testing.csv", "r")
+fo = open("commands.csv", "r")
+#fo = open("testing.csv", "r")
 
 # Start the music
 pygame.mixer.music.play()
