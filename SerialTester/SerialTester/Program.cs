@@ -67,21 +67,21 @@ namespace SerialTester
                 else if (string.Equals(input, "l"))
                 {
                     message[0] = 192;
-                    message[1] = 1;
+                    message[1] = 64;
                     message[2] = 0;
                     message[3] = 0;
                 }
                 else if (string.Equals(input, "h"))
                 {
                     message[0] = 192;
-                    message[1] = 2;
+                    message[1] = 128;
                     message[2] = 0;
                     message[3] = 0;
                 }
                 else if (string.Equals(input, "o"))
                 {
                     message[0] = 192;
-                    message[1] = 3;
+                    message[1] = 192;
                     message[2] = 0;
                     message[3] = 0;
                 }
