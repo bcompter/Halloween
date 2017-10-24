@@ -121,10 +121,22 @@ void main(void)
  
     
     /* DEBUGGING */
-    
     CommandRed = 0;
     CommandGreen = 0;
     CommandBlue = 255;
+    
+    OscHigh[BLUE] = CommandBlue;
+    OscLow[BLUE] = CommandBlue >> 5;
+    OscStep[BLUE] = CommandBlue >> 7;
+    OscValue[BLUE] = OscLow[BLUE];
+
+    //OscHigh[BLUE] = 255;
+    //OscLow[BLUE] = 64;
+   //OscStep[BLUE] = 2;
+    //OscValue[BLUE] = 64;
+    
+    OscDirection = 0;
+    
     CommandState = STATE_LOW;
     
     /* END DEBUG */
@@ -163,9 +175,9 @@ void main(void)
                 Pwm_B = 0;
                 break;
             case STATE_LOW:
-                Pwm_R = (unsigned char)(CommandRed >> 2);
-                Pwm_G = (unsigned char)(CommandGreen >> 2);
-                Pwm_B = (unsigned char)(CommandBlue >> 2);
+                Pwm_R = (unsigned char)(CommandRed >> 3);
+                Pwm_G = (unsigned char)(CommandGreen >> 3);
+                Pwm_B = (unsigned char)(CommandBlue >> 3);
                 break;
             case STATE_HIGH:
                 Pwm_R = CommandRed;
@@ -173,10 +185,6 @@ void main(void)
                 Pwm_B = CommandBlue;
                 break;
             case STATE_OSC:                
-                if (LastOddEven == OddEven)
-                    return;
-                
-                LastOddEven = OddEven;
                 if (!OscDirection)
                 {
                     // Going UP
@@ -274,6 +282,15 @@ void Initialize(void)
     LED_7 = 0;
     LED_8 = 0;
     LED_9 = 0;
+    
+    int i;
+    for (i = 0; i < 3; i++)
+    {
+        OscHigh[i] = 0;
+        OscLow[i] = 0;
+        OscStep[i] = 0;
+        OscValue[i] = 0;
+    }
 
 	GIE = 1;		// Enable interrupts and GO
 }
@@ -355,19 +372,19 @@ void ProcessMessage(void)
             CommandBlue     = RecvData[COMMAND_BLUE];
             
             // Setup Osc values
-            OscHigh[RED] = CommandRed >> 1;
-            OscLow[RED] = CommandRed >> 4;
-            OscStep[RED] = CommandRed >> 6;
+            OscHigh[RED] = CommandRed;
+            OscLow[RED] = CommandRed >> 5;
+            OscStep[RED] = CommandRed >> 7;
             OscValue[RED] = OscLow[RED];
             
-            OscHigh[GREEN] = CommandGreen >> 1;
-            OscLow[GREEN] = CommandGreen >> 4;
-            OscStep[GREEN] = CommandGreen >> 6;
+            OscHigh[GREEN] = CommandGreen;
+            OscLow[GREEN] = CommandGreen >> 5;
+            OscStep[GREEN] = CommandGreen >> 7;
             OscValue[GREEN] = OscLow[GREEN];
             
-            OscHigh[BLUE] = CommandBlue >> 1;
-            OscLow[BLUE] = CommandBlue >> 4;
-            OscStep[BLUE] = CommandBlue >> 6;
+            OscHigh[BLUE] = CommandBlue;
+            OscLow[BLUE] = CommandBlue >> 5;
+            OscStep[BLUE] = CommandBlue >> 7;
             OscValue[BLUE] = OscLow[BLUE];
 
             OscDirection = 0;
@@ -394,9 +411,6 @@ void interrupt timer()
 	// Increment comms time to live
 	if ( RecvState > 0 )
 		ttl++;
-    
-    // Flip cycle
-    OddEven ^= 1;
 
 	// If CLK = 0, end of period
 		// Turn ON all channels > 0
