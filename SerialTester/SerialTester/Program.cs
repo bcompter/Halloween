@@ -40,7 +40,7 @@ namespace SerialTester
             Byte [] message = new Byte[5];
             while(!string.Equals(input, "q"))
             {
-                Console.Write("Command: (r, g, b, l, h, o, q)  ");
+                Console.Write("Command: (r, g, b, l, h, o, f, q)  ");
                 input = Console.ReadLine();
 
                 if (string.Equals(input, "r"))
@@ -66,22 +66,29 @@ namespace SerialTester
                 }
                 else if (string.Equals(input, "l"))
                 {
-                    message[0] = 192;
+                    message[0] = 193;
                     message[1] = 1;
                     message[2] = 0;
                     message[3] = 0;
                 }
                 else if (string.Equals(input, "h"))
                 {
-                    message[0] = 192;
+                    message[0] = 193;
                     message[1] = 2;
                     message[2] = 0;
                     message[3] = 0;
                 }
                 else if (string.Equals(input, "o"))
                 {
-                    message[0] = 192;
+                    message[0] = 193;
                     message[1] = 3;
+                    message[2] = 0;
+                    message[3] = 0;
+                }
+                else if (string.Equals(input, "f"))
+                {
+                    message[0] = 193;
+                    message[1] = 0;
                     message[2] = 0;
                     message[3] = 0;
                 }

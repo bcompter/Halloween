@@ -118,17 +118,7 @@ void ProcessMessage(void);
 void main(void) 
 {
     Initialize();
- 
-    
-    /* DEBUGGING */
-    
-    CommandRed = 0;
-    CommandGreen = 0;
-    CommandBlue = 255;
-    CommandState = STATE_LOW;
-    
-    /* END DEBUG */
-    
+
     // Loop forever
     while(1 == 1)
     {
@@ -173,10 +163,6 @@ void main(void)
                 Pwm_B = CommandBlue;
                 break;
             case STATE_OSC:                
-                if (LastOddEven == OddEven)
-                    return;
-                
-                LastOddEven = OddEven;
                 if (!OscDirection)
                 {
                     // Going UP
@@ -259,10 +245,6 @@ void Initialize(void)
     
     // Init osc direction
     OscDirection = 0;
-    
-    // Init odd even cycles
-    OddEven = 0;
-    LastOddEven = 0;
 
     // Turn everything off
     LED_1 = 0;
@@ -315,41 +297,19 @@ void ProcessMessage(void)
     unsigned char command = (unsigned char)(RecvData[COMMAND] & 0b11110000);     // Mask command data 
     unsigned char cmdID;
     unsigned int cmdState;
+    
+    // Check the ID
+    cmdID = (unsigned char)(RecvData[COMMAND] & 0b00001111);
+    if (cmdID != ID)
+        return;         // Not for me, goodbye
+    
     switch(command)
     {
         case COMMAND_STATE:            
-            if (ID == 1)
-            {
-                cmdState = (unsigned char)(RecvData[PAYLOAD_1] & 0b11000000);
-                cmdState = cmdState >> 6;
-                CommandState = cmdState;
-            }
-            else if (ID == 2)
-            {
-                cmdState = (unsigned char)(RecvData[PAYLOAD_1] & 0b00110000);
-                cmdState = cmdState >> 4;
-                CommandState = cmdState;
-            }
-            else if (ID == 3)
-            {
-                cmdState = (unsigned char)(RecvData[PAYLOAD_1] & 0b00001100);
-                cmdState = cmdState >> 2;
-                CommandState = cmdState;
-            }
-            else if (ID == 4)
-            {
-                cmdState = (unsigned char)(RecvData[PAYLOAD_1] & 0b00000011);
-                CommandState = cmdState;
-            }
-            
+            CommandState = (unsigned char)(RecvData[PAYLOAD_1]);             
             break;
             
-        case COMMAND_COLOR:
-            
-            cmdID = (unsigned char)(RecvData[COMMAND] & 0b00001111);
-            if (cmdID != ID)
-                return;         // Not for me, goodbye
-            
+        case COMMAND_COLOR:            
             CommandRed      = RecvData[COMMAND_RED];
             CommandGreen    = RecvData[COMMAND_GREEN];
             CommandBlue     = RecvData[COMMAND_BLUE];
@@ -394,9 +354,6 @@ void interrupt timer()
 	// Increment comms time to live
 	if ( RecvState > 0 )
 		ttl++;
-    
-    // Flip cycle
-    OddEven ^= 1;
 
 	// If CLK = 0, end of period
 		// Turn ON all channels > 0
